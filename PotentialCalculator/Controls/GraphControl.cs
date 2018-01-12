@@ -11,6 +11,8 @@ namespace PotentialCalculator.Controls {
         Criteria criteria;
         public GraphControl() {
             InitializeComponent();
+            zedGraphControl.GraphPane.XAxis.Title.IsVisible = false;
+            zedGraphControl.GraphPane.YAxis.Title.IsVisible = false;
         }
         public GraphControl(string title, Criteria criteria) : this() {
             this.SetTitle(title);

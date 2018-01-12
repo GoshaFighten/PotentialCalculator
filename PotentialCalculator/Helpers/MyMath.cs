@@ -52,7 +52,7 @@ namespace PotentialCalculator.Helpers {
             );
         }
         static double CalcF(double mean, double sigma, double normalization, double currentValue) {
-            return Math.Round(1.0 / sigma / normalization * Math.Pow((currentValue - mean), 2) / currentValue / mean, precision);
+            return Math.Abs(Math.Round(1.0 / sigma / normalization * Math.Pow((currentValue - mean), 2) / currentValue / mean, precision));
         }
         public static double CalcDetectionP(Criteria criteria) {
             var d = new NormalDistribution(criteria.SourceMean, criteria.SourceSigma);
