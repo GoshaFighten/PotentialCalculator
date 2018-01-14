@@ -11,7 +11,7 @@ namespace PotentialCalculator {
             this.graphControl2.hidePs();
         }
         public void Calc() {
-            var result = MyMath.CalcCC(Project.ProjectInstance.Criterias.ToList());
+            var result = MyMath.CalcCCDensity(Project.ProjectInstance.Criterias.ToList());
             this.graphControl1.AddVLine(Project.ProjectInstance.CCThreshold, "Порог", Color.Green, MyMath.GetMaxY(result.Item1, result.Item2));
             this.graphControl1.AddCurve(result.Item1, "КК источника", Color.Red);
             this.graphControl1.AddCurve(result.Item2, "КК помехи", Color.Blue);
