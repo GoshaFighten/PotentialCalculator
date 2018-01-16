@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 using ZedGraph;
 
 namespace PotentialCalculator.Controls {
@@ -14,6 +15,15 @@ namespace PotentialCalculator.Controls {
             zedGraphControl.GraphPane.XAxis.Title.IsVisible = false;
             zedGraphControl.GraphPane.YAxis.Title.IsVisible = false;
         }
+
+        public void SetNotificationControl(Control control) {
+            layoutControlItem2.BeginInit();
+            Control tempC = layoutControlItem2.Control;
+            layoutControlItem2.Control = control;
+            tempC.Parent = null;
+            layoutControlItem2.EndInit();
+        }
+
         public GraphControl(string title, Criteria criteria) : this() {
             this.SetTitle(title);
             this.criteria = criteria;
