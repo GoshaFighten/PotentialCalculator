@@ -51,5 +51,12 @@ namespace PotentialCalculator {
             SaveFileDialog dialog = new SaveFileDialog();
             return dialog;
         }
+
+        private void repositoryItemButtonEdit1_ButtonClick(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e) {
+            Criteria criteria = (Criteria)gridView1.GetFocusedRow();
+            var form = new TForm();
+            form.Render(criteria);
+            form.ShowDialog();
+        }
     }
 }

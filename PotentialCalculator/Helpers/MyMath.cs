@@ -115,26 +115,29 @@ namespace PotentialCalculator.Helpers {
             return targetF == FSource ? CCDecision.Hit : CCDecision.FalseAlarm;
         }
 
-        public static double CalcDetectionP(Criteria criteria) {
+        public static double CalcDetectionP(Criteria criteria, double? threshold = null) {
+            var t = threshold.HasValue ? threshold.Value : criteria.Threshold;
             var d = new NormalDistribution(criteria.SourceMean, criteria.SourceSigma);
             if (criteria.SourceMean > criteria.DisturberMean) {
-                return d.RightProbability(criteria.Threshold);
+                return d.RightProbability(t);
             }
-            return d.LeftProbability(criteria.Threshold);
+            return d.LeftProbability(t);
         }
-        public static double CalcErrorP(Criteria criteria) {
+        public static double CalcErrorP(Criteria criteria, double? threshold = null) {
+            var t = threshold.HasValue ? threshold.Value : criteria.Threshold;
             var d = new NormalDistribution(criteria.DisturberMean, criteria.DisturberSigma);
             if (criteria.SourceMean > criteria.DisturberMean) {
-                return d.RightProbability(criteria.Threshold);
+                return d.RightProbability(t);
             }
-            return d.LeftProbability(criteria.Threshold);
+            return d.LeftProbability(t);
         }
-        public static double CalcMissP(Criteria criteria) {
+        public static double CalcMissP(Criteria criteria, double? threshold = null) {
+            var t = threshold.HasValue ? threshold.Value : criteria.Threshold;
             var d = new NormalDistribution(criteria.SourceMean, criteria.DisturberSigma);
             if (criteria.SourceMean > criteria.DisturberMean) {
-                return d.LeftProbability(criteria.Threshold);
+                return d.LeftProbability(t);
             }
-            return d.RightProbability(criteria.Threshold);
+            return d.RightProbability(t);
         }
         public static double CalcRandomLeftProbability(MyPoint[] density, double threshold) {
             return density.Where(p => p.X < threshold).Select(p => p.Y).Sum();

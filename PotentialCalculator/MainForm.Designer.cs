@@ -49,6 +49,7 @@
             this.colDisturberMean = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colDisturberSigma = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colThreshold = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.repositoryItemButtonEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemButtonEdit();
             this.simpleButton1 = new DevExpress.XtraEditors.SimpleButton();
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
             this.simpleButton5 = new DevExpress.XtraEditors.SimpleButton();
@@ -71,6 +72,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.criteriasBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.projectBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemButtonEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CCThresholdTextEdit.Properties)).BeginInit();
@@ -92,6 +94,8 @@
             this.gridControl1.Location = new System.Drawing.Point(12, 36);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
+            this.gridControl1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.repositoryItemButtonEdit1});
             this.gridControl1.Size = new System.Drawing.Size(873, 301);
             this.gridControl1.TabIndex = 0;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -155,10 +159,19 @@
             // 
             // colThreshold
             // 
+            this.colThreshold.ColumnEdit = this.repositoryItemButtonEdit1;
             this.colThreshold.FieldName = "Threshold";
             this.colThreshold.Name = "colThreshold";
             this.colThreshold.Visible = true;
             this.colThreshold.VisibleIndex = 5;
+            // 
+            // repositoryItemButtonEdit1
+            // 
+            this.repositoryItemButtonEdit1.AutoHeight = false;
+            this.repositoryItemButtonEdit1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton()});
+            this.repositoryItemButtonEdit1.Name = "repositoryItemButtonEdit1";
+            this.repositoryItemButtonEdit1.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(this.repositoryItemButtonEdit1_ButtonClick);
             // 
             // simpleButton1
             // 
@@ -399,6 +412,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.criteriasBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.projectBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemButtonEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.CCThresholdTextEdit.Properties)).EndInit();
@@ -446,6 +460,7 @@
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem5;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem6;
+        private DevExpress.XtraEditors.Repository.RepositoryItemButtonEdit repositoryItemButtonEdit1;
     }
 }
 
