@@ -7,7 +7,7 @@ using System.Linq;
 namespace PotentialCalculator.Helpers {
     public static class MyMath {
         static Random random = new Random();
-        static int retry = 10000000;
+        //static int retry = 10000000;
         static int precision = 5;
         public static MyPoint[] GetGraphDataForNormalDistribution(double mean, double sigma) {
             var list = new List<MyPoint>();
@@ -21,39 +21,60 @@ namespace PotentialCalculator.Helpers {
             return list.ToArray();
         }
 
-        public static Tuple<MyPoint[], MyPoint[], Dictionary<CCDecision, double>> CalcCCDensity(List<Criteria> criterias, double threshold, bool newLogic = false) {
+        public static Tuple<MyPoint[], MyPoint[], Dictionary<CCDecision, double>, int> CalcCCDensity(List<Criteria> criterias, double threshold, bool newLogic = false) {
             var ccSourceDensity = new Dictionary<double, double>();
             var ccDisturberDensity = new Dictionary<double, double>();
             var decisions = new Dictionary<CCDecision, double>();
             decisions.Add(CCDecision.Hit, 0.0);
             decisions.Add(CCDecision.FalseAlarm, 0.0);
             decisions.Add(CCDecision.Miss, 0.0);
-            for (int i = 0; i < retry; i++) {
-                double ccSource, ccDisturber;
-                var cc = CalcCCRandom(criterias, newLogic);
-                ccSource = Math.Round(cc.Item1, precision);
-                ccDisturber = Math.Round(cc.Item2, precision);
-                if (ccSourceDensity.ContainsKey(ccSource)) {
-                    ccSourceDensity[ccSource] += 1.0 / retry;
-                } else {
-                    ccSourceDensity.Add(ccSource, 1.0 / retry);
-                }
-                if (ccDisturberDensity.ContainsKey(ccDisturber)) {
-                    ccDisturberDensity[ccDisturber] += 1.0 / retry;
-                } else {
-                    ccDisturberDensity.Add(ccDisturber, 1.0 / retry);
-                }
-                var decision = MakeDecision(ccSource, ccDisturber, threshold);
-                if (decisions.ContainsKey(decision)) {
-                    decisions[decision] += 1.0 / retry;
-                } else {
-                    decisions.Add(decision, 1.0 / retry);
-                }
-            }
-            return new Tuple<MyPoint[], MyPoint[], Dictionary<CCDecision, double>>(
-                ccSourceDensity.OrderBy(i => i.Key).Select(i => new MyPoint() { X = i.Key, Y = i.Value }).ToArray(),
-                ccDisturberDensity.OrderBy(i => i.Key).Select(i => new MyPoint() { X = i.Key, Y = i.Value }).ToArray(),
-                decisions
+            var delta = 1.0 / precision;
+            var hitP = 0.0;
+            var falseAlarmP = 0.0;
+            var missP = 0.0;
+            var retry = 0;
+            var error = 0.0;
+            do {
+                for (int i = 0; i < 1000; i++) {
+                    retry++;
+                    double ccSource, ccDisturber;
+                    var cc = CalcCCRandom(criterias, newLogic);
+                    ccSource = Math.Round(cc.Item1, precision);
+                    ccDisturber = Math.Round(cc.Item2, precision);
+                    if (ccSourceDensity.ContainsKey(ccSource)) {
+                        ccSourceDensity[ccSource] += 1.0;
+                    } else {
+                        ccSourceDensity.Add(ccSource, 1.0);
+                    }
+                    if (ccDisturberDensity.ContainsKey(ccDisturber)) {
+                        ccDisturberDensity[ccDisturber] += 1.0;
+                    } else {
+                        ccDisturberDensity.Add(ccDisturber, 1.0);
+                    }
+                    var decision = MakeDecision(ccSource, ccDisturber, threshold);
+                    if (decisions.ContainsKey(decision)) {
+                        decisions[decision] += 1.0;
+                    } else {
+                        decisions.Add(decision, 1.0);
+                    }
+                }                
+                var currentDecisionP = decisions.ToDictionary(d => d.Key, d => d.Value / retry);
+                error = Math.Max(
+                                 Math.Abs(currentDecisionP[CCDecision.Hit] - hitP),
+                                 Math.Max(
+                                          Math.Abs(currentDecisionP[CCDecision.Miss] - missP),
+                                          Math.Abs(currentDecisionP[CCDecision.FalseAlarm] - falseAlarmP)
+                                         )
+                                );
+                hitP = currentDecisionP[CCDecision.Hit];
+                falseAlarmP = currentDecisionP[CCDecision.FalseAlarm];
+                missP = currentDecisionP[CCDecision.Miss];
+            } while (error > delta);
+            return new Tuple<MyPoint[], MyPoint[], Dictionary<CCDecision, double>, int>(
+                ccSourceDensity.OrderBy(i => i.Key).Select(i => new MyPoint() { X = i.Key, Y = i.Value / retry }).ToArray(),
+                ccDisturberDensity.OrderBy(i => i.Key).Select(i => new MyPoint() { X = i.Key, Y = i.Value / retry }).ToArray(),
+                decisions.ToDictionary(d => d.Key, d => d.Value / retry),
+                retry
             );
         }
 

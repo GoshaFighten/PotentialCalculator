@@ -14,16 +14,17 @@ namespace PotentialCalculator.Controls {
         public KControl() {
             InitializeComponent();
         }
-        public void Calc(Dictionary<Criteria, double> ks) {
+        public void Calc(Dictionary<Criteria, double> ks, int retry) {
             foreach (var k in ks) {
-                this.AddRow(k.Key, k.Value);
+                this.AddRow(k.Value, "K " + k.Key.Name);
             }
+            this.AddRow(retry, "Попыток");
         }
-        void AddRow(Criteria criteria, double k) {
+        void AddRow(double value, string name) {
             var index = layoutControl1.Root.OptionsTableLayoutGroup.RowDefinitions.Add(new DevExpress.XtraLayout.RowDefinition());
             var txt = new TextEdit();
-            txt.EditValue = k;
-            var item = layoutControl1.AddItem("K " + criteria.Name, txt);
+            txt.EditValue = value;
+            var item = layoutControl1.AddItem(name, txt);
             item.OptionsTableLayoutItem.RowIndex = index;
         }
     }

@@ -8,14 +8,19 @@ using System.Linq;
 namespace PotentialCalculator {
     public partial class CCForm : DevExpress.XtraEditors.XtraForm {
         KControl kControl = new KControl();
+        bool newLogic = false;
         public CCForm() {
             InitializeComponent();
             this.graphControl2.SetNotificationControl(kControl);
             //this.graphControl2.hidePs();
         }
-        public void Calc(bool newLogic = false) {
-            kControl.Calc(MyMath.CalcKs(Project.ProjectInstance.Criterias, newLogic));
+        public CCForm(bool newLogic) : this() {
+            this.newLogic = newLogic;
+        }
+        public void Calc() {
+            var ks = MyMath.CalcKs(Project.ProjectInstance.Criterias, newLogic);
             var result = MyMath.CalcCCDensity(Project.ProjectInstance.Criterias.ToList(), Project.ProjectInstance.CCThreshold, newLogic);
+            kControl.Calc(ks, result.Item4);
             this.graphControl1.AddVLine(Project.ProjectInstance.CCThreshold, "Порог", Color.Green, MyMath.GetMaxY(result.Item1, result.Item2));
             this.graphControl1.AddCurve(result.Item1, "КК источника", Color.Red);
             this.graphControl1.AddCurve(result.Item2, "КК помехи", Color.Blue);
@@ -34,8 +39,14 @@ namespace PotentialCalculator {
         }
 
         private void barButtonItem1_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
-            var form = new CCForm();
-            form.Calc(true);
+            var form = new CCForm(true);
+            form.Calc();
+            form.ShowDialog();
+        }
+
+        private void barButtonItem2_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e) {
+            var form = new TForm();
+            form.RenderCC(newLogic);
             form.ShowDialog();
         }
     }
