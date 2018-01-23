@@ -1,4 +1,6 @@
-﻿using Meta.Numerics.Statistics.Distributions;
+﻿using Meta.Numerics;
+using Meta.Numerics.SignalProcessing;
+using Meta.Numerics.Statistics.Distributions;
 using PotentialCalculator.Models;
 using System;
 using System.Collections.Generic;
@@ -170,6 +172,18 @@ namespace PotentialCalculator.Helpers {
             var maxYOne = one.Max(p => p.Y);
             var maxYTwo = two.Max(p => p.Y);
             return Math.Max(maxYOne, maxYTwo);
+        }
+
+        public static MyPoint[] FourierTransform(MyPoint[] data) {
+            FourierTransformer ft = new FourierTransformer(data.Length);
+            Complex[] x = data.Select(p => (Complex)p.Y).ToArray();
+            Complex[] xt = ft.Transform(x);
+            double[] result = xt.Select(c => ZComplex(c)).ToArray();
+            return result.Select((value, i) => new MyPoint(i, value)).ToArray();
+        }
+
+        static double ZComplex(Complex value) {
+            return Math.Sqrt(value.Re * value.Re + value.Im * value.Im);
         }
     }
 }
